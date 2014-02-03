@@ -32,4 +32,5 @@ public class CliEnvironment
    public static final String FORMAT = "format"; //$NON-NLS-1$
 
    public static final String LIMIT = "limit"; //$NON-NLS-1$
+   public static final String SHOW_SQL = "sql"; //$NON-NLS-1$
 }

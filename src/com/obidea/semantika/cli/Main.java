@@ -53,6 +53,7 @@ public class Main
    static {
       sOptions.addOption(CliEnvironment.HELP, false, "print this message"); //$NON-NLS-1$
       sOptions.addOption(CliEnvironment.VERSION, false, "print the version information and exit"); //$NON-NLS-1$
+      sOptions.addOption(CliEnvironment.SHOW_SQL, false, "show the generated SQL"); //$NON-NLS-1$ //$NON-NLS-2$
       sOptions.addOption("v", CliEnvironment.VERBOSE, false, "be extra verbose"); //$NON-NLS-1$ //$NON-NLS-2$
       sOptions.addOption("q", CliEnvironment.QUIET, false, "be extra quiet"); //$NON-NLS-1$ //$NON-NLS-2$
       sOptions.addOption(
@@ -143,7 +144,9 @@ public class Main
          File fquery = determineQueryFile(optionLine);
          int limit = determineResultLimit(optionLine);
          IQueryEngine engine = createQueryEngine(manager);
-         queryanswer(engine, fquery, limit);
+         
+         boolean showSql = determineShowSql(optionLine);
+         queryanswer(engine, fquery, limit, showSql);
       }
       else if (operation.equals(CliEnvironment.MATERIALIZE_OP)) {
          String format = determineOutputFormat(optionLine);
@@ -156,13 +159,28 @@ public class Main
       }
    }
 
-   private static void queryanswer(IQueryEngine engine, File fquery, int limit) throws QueryEngineException, QueryEvaluationException, IOException
+   private static void queryanswer(IQueryEngine engine, File fquery, int limit, boolean showSql) throws QueryEngineException, QueryEvaluationException, IOException
    {
-      String sparql = FileUtils.readFileToString(fquery, "UTF-8");
+      String sparql = FileUtils.readFileToString(fquery, "UTF-8"); //$NON-NLS-1$
       engine.start();
-      IQueryResult result = evaluateQuery(sparql, engine, limit);
-      flushResult(result);
+      if (showSql) {
+         printSql(sparql, engine, limit);
+      }
+      else {
+         flushResult(evaluateQuery(sparql, engine, limit));
+      }
       engine.stop();
+   }
+
+   private static void printSql(String sparql, IQueryEngine engine, int limit) throws QueryEvaluationException
+   {
+      if (engine instanceof IQueryEngineExt) {
+         String sql = ((IQueryEngineExt) engine).createQuery(sparql).setMaxResults(limit).getString();
+         System.out.println(sql);
+      }
+      else {
+         System.err.println("Feature is not supported by the query engine"); //$NON-NLS-1$
+      }
    }
 
    private static IQueryResult evaluateQuery(String sparql, IQueryEngine engine, int limit) throws QueryEvaluationException
@@ -275,6 +293,17 @@ public class Main
          return -1;
       }
       return Integer.parseInt(limit);
+   }
+
+   /**
+    * Determines if the generated SQL should be printed instead of executing it.
+    * 
+    * @param optionLine
+    *           The command-line arguments passed in.
+    */
+   private static boolean determineShowSql(CommandLine optionLine)
+   {
+      return optionLine.hasOption(CliEnvironment.SHOW_SQL);
    }
 
    /**
