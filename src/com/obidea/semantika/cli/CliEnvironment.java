@@ -29,8 +29,7 @@ public class CliEnvironment
    public static final String OUTPUT = "output"; //$NON-NLS-1$
    public static final String QUERY = "query"; //$NON-NLS-1$
 
-   public static final String USE_NTRIPLES = "n3"; //$NON-NLS-1$
-   public static final String USE_TURTLE = "ttl"; //$NON-NLS-1$
-   public static final String USE_RDFXML = "xml"; //$NON-NLS-1$
-   public static final String USE_JSONLD = "json"; //$NON-NLS-1$
+   public static final String FORMAT = "format"; //$NON-NLS-1$
+
+   public static final String LIMIT = "limit"; //$NON-NLS-1$
 }

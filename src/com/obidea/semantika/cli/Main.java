@@ -37,6 +37,7 @@ import com.obidea.semantika.materializer.IMaterializerEngine;
 import com.obidea.semantika.materializer.MaterializationException;
 import com.obidea.semantika.materializer.MaterializerEngineException;
 import com.obidea.semantika.queryanswer.IQueryEngine;
+import com.obidea.semantika.queryanswer.IQueryEngineExt;
 import com.obidea.semantika.queryanswer.QueryEngineException;
 import com.obidea.semantika.queryanswer.QueryEvaluationException;
 import com.obidea.semantika.queryanswer.result.IQueryResult;
@@ -72,10 +73,18 @@ public class Main
             .hasArg()
             .withArgName("PATH") //$NON-NLS-1$
             .create());
-      sOptions.addOption(CliEnvironment.USE_NTRIPLES, false, "flush output in NTriples format"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.USE_TURTLE, false, "flush output in Turtle format"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.USE_RDFXML, false, "flush output in RDF/XML format"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.USE_JSONLD, false, "flush output in JSON-LD format"); //$NON-NLS-1$
+      sOptions.addOption(
+            OptionBuilder.withLongOpt(CliEnvironment.FORMAT)
+            .withDescription("flush result in selected format (FORMAT=N3|Turtle|XML|JSON)") //$NON-NLS-1$
+            .hasArg()
+            .withArgName("FORMAT") //$NON-NLS-1$
+            .create("f")); //$NON-NLS-1$
+      sOptions.addOption(
+            OptionBuilder.withLongOpt(CliEnvironment.LIMIT)
+            .withDescription("limit the number of returned query result") //$NON-NLS-1$
+            .hasArg()
+            .withArgName("SIZE") //$NON-NLS-1$
+            .create("l")); //$NON-NLS-1$
    }
 
    private static HelpFormatter mFormatter = new HelpFormatter();
@@ -93,6 +102,10 @@ public class Main
          
          if (optionLine.hasOption(CliEnvironment.VERSION)) {
             printVersion();
+            System.exit(0);
+         }
+         if (optionLine.hasOption(CliEnvironment.HELP)) {
+            printUsage();
             System.exit(0);
          }
          
@@ -128,8 +141,9 @@ public class Main
       
       if (operation.equals(CliEnvironment.QUERYANSWER_OP)) {
          File fquery = determineQueryFile(optionLine);
+         int limit = determineResultLimit(optionLine);
          IQueryEngine engine = createQueryEngine(manager);
-         queryanswer(engine, fquery);
+         queryanswer(engine, fquery, limit);
       }
       else if (operation.equals(CliEnvironment.MATERIALIZE_OP)) {
          String format = determineOutputFormat(optionLine);
@@ -142,19 +156,21 @@ public class Main
       }
    }
 
-   private static void queryanswer(IQueryEngine engine, File fquery) throws QueryEngineException, QueryEvaluationException, IOException
+   private static void queryanswer(IQueryEngine engine, File fquery, int limit) throws QueryEngineException, QueryEvaluationException, IOException
    {
+      String sparql = FileUtils.readFileToString(fquery, "UTF-8");
       engine.start();
-      IQueryResult result = engine.evaluate(FileUtils.readFileToString(fquery, "UTF-8")); //$NON-NLS-1$
+      IQueryResult result = evaluateQuery(sparql, engine, limit);
       flushResult(result);
       engine.stop();
    }
 
-   private static void flushResult(IQueryResult result) throws IOException
+   private static IQueryResult evaluateQuery(String sparql, IQueryEngine engine, int limit) throws QueryEvaluationException
    {
-      while (result.next()) {
-         System.out.println(result.getValueList().toString());
+      if (engine instanceof IQueryEngineExt) {
+         return ((IQueryEngineExt) engine).createQuery(sparql).setMaxResults(limit).evaluate();
       }
+      return engine.evaluate(sparql);
    }
 
    private static void materialize(IMaterializerEngine engine, File fout) throws MaterializerEngineException, MaterializationException
@@ -171,21 +187,38 @@ public class Main
 
    private static IMaterializerEngine createMaterializerEngine(ApplicationManager manager, String format)
    {
-      if (format.equals("NTriples")) { //$NON-NLS-1$
+      if (format.equals("N3")) { //$NON-NLS-1$
          return manager.createMaterializerEngine().useNTriples();
       }
       else if (format.equals("Turtle")) { //$NON-NLS-1$
          return manager.createMaterializerEngine().useTurtle();
       }
-      else if (format.equals("RDF/XML")) { //$NON-NLS-1$
+      else if (format.equals("XML")) { //$NON-NLS-1$
          return manager.createMaterializerEngine().useRdfXml();
       }
-      else if (format.equals("RDF/JSON")) { //$NON-NLS-1$
+      else if (format.equals("JSON")) { //$NON-NLS-1$
          return manager.createMaterializerEngine().useRdfJson();
       }
       return null; // should never goes here
    }
 
+   /**
+    * Flush the query result to stdout.
+    */
+   private static void flushResult(IQueryResult result) throws IOException
+   {
+      while (result.next()) {
+         System.out.println(result.getValueList().toString());
+      }
+   }
+
+   /**
+    * Determines the file to use for reading the SPARQL query.
+    * 
+    * @param optionLine
+    *           The command-line arguments passed in.
+    * @return The path of the query file on disk.
+    */
    private static File determineQueryFile(CommandLine optionLine)
    {
       String query = optionLine.getOptionValue(CliEnvironment.QUERY); //$NON-NLS-1$
@@ -221,19 +254,27 @@ public class Main
     */
    private static String determineOutputFormat(CommandLine optionLine)
    {
-      if (optionLine.hasOption(CliEnvironment.USE_NTRIPLES)) {
-         return "NTriples"; //$NON-NLS-1$
+      String format = optionLine.getOptionValue(CliEnvironment.FORMAT);
+      if (StringUtils.isEmpty(format)) {
+         format = "Turtle"; //$NON-NLS-1$ - by default
       }
-      else if (optionLine.hasOption(CliEnvironment.USE_TURTLE)) {
-         return "Turtle"; //$NON-NLS-1$
+      return format;
+   }
+
+   /**
+    * Determines the limit of the query result to be fetched.
+    * 
+    * @param optionLine
+    *           The command-line arguments passed in.
+    * @return The limit amount.
+    */
+   private static int determineResultLimit(CommandLine optionLine)
+   {
+      String limit = optionLine.getOptionValue(CliEnvironment.LIMIT);
+      if (StringUtils.isEmpty(limit)) {
+         return -1;
       }
-      else if (optionLine.hasOption(CliEnvironment.USE_RDFXML)) {
-         return "RDF/XML"; //$NON-NLS-1$
-      }
-      else if (optionLine.hasOption(CliEnvironment.USE_JSONLD)) {
-         return "RDF/JSON"; //$NON-NLS-1$
-      }
-      return "Turtle"; //$NON-NLS-1$ - by default
+      return Integer.parseInt(limit);
    }
 
    /**
@@ -251,8 +292,6 @@ public class Main
                return arg;
            }
        }
-       System.err.println("Operation is missing"); //$NON-NLS-1$
-       System.exit(1);
        return null;
    }
 
@@ -274,18 +313,23 @@ public class Main
       return null;
    }
 
+   /**
+    * Print tool version.
+    */
    private static void printVersion()
    {
       StringBuilder sb = new StringBuilder();
-      sb.append("semantika version ");
-      sb.append("\"").append(VERSION_NUMBER).append("\"");
-      sb.append("\n");
-      sb.append("Semantika Core Runtime ");
-      sb.append("(build ").append(SEMANTIKA_CORE_VERSION_NUMBER).append(")");
-      sb.append("\n");
+      sb.append("semantika version "); //$NON-NLS-1$
+      sb.append("\"").append(VERSION_NUMBER).append("\""); //$NON-NLS-1$ //$NON-NLS-2$
+      sb.append("\n"); //$NON-NLS-1$
+      sb.append("Semantika Core Runtime "); //$NON-NLS-1$
+      sb.append("(build ").append(SEMANTIKA_CORE_VERSION_NUMBER).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
       System.out.println(sb.toString());
    }
 
+   /**
+    * Set all loggers in INFO level.
+    */
    private static void normal(List<Logger> loggers)
    {
       for ( Logger logger : loggers ) {
@@ -293,6 +337,9 @@ public class Main
      }
    }
 
+   /**
+    * Set all loggers in DEBUG level.
+    */
    private static void verbose(List<Logger> loggers)
    {
       for ( Logger logger : loggers ) {
@@ -300,6 +347,9 @@ public class Main
       }
    }
 
+   /**
+    * Disable all loggers.
+    */
    private static void quiet(List<Logger> loggers)
    {
       for ( Logger logger : loggers ) {
@@ -313,6 +363,11 @@ public class Main
    private static void printUsage()
    {
       String helpText = String.format("semantika [%s|%s] [OPTION]...", CliEnvironment.QUERYANSWER_OP, CliEnvironment.MATERIALIZE_OP); //$NON-NLS-1$
-      mFormatter.printHelp(helpText, sOptions);
+      String header = ""; //$NON-NLS-1$
+      String footer = 
+            "\nExample:\n" + //$NON-NLS-1$
+            "   ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100\n" + //$NON-NLS-1$
+            "   ./semantika materialize --config=configuration.xml --output=output.n3 -f N3"; //$NON-NLS-1$
+      mFormatter.printHelp(400, helpText, header, sOptions, footer);
    }
 }
