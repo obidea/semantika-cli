@@ -1,7 +1,7 @@
 Semantika CLI
 =============
 
-A command line tool for Semantika engine. Best use for testing your domain and application model.
+A command line tool for Semantika engine. This tool is best use for testing your application-domain model.
 
 ```
 usage: semantika [queryanswer|materialize] [OPTION]...
@@ -58,3 +58,14 @@ Here are some examples to export RDB rows into RDF triples which can be useful f
 ```
 ./semantika materialize --config=configuration.xml --output=output.n3 -f N3 --quiet
 ```
+
+User's Guide
+------------
+
+1. Download and unzip the binaries: [semantika-cli-1.0.zip](https://github.com/obidea/semantika-cli/releases/tag/1.0)
+2. Create your application-domain model. There are two input documents for declaring the specification, i.e.,
+  * `ontology.owl`: specifies the names or labels used in the application.
+  * `mapping.xml`: specifies the interconnection between labels and records in database (e.g., Label 'Employee' is connected to records in column 'EMP_ID' in table 'EMPLOYEE_TNT_2010')
+3. Create the configuration file that points the location of the input domain documents and other application settings.
+4. Put the JDBC driver according to your database product.
+5. Run the command provided by the tool.
