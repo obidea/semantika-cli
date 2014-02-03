@@ -30,7 +30,7 @@ Here are some examples on querying data in database using SPARQL (rather than no
 ./semantika queryanswer --config=configuration.xml --query=query.txt --quiet
 ```
 
-* Data query with max result number
+* Data query with max result number (LIMIT=100)
 
 ```
 ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100 --quiet
