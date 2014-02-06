@@ -69,3 +69,9 @@ User's Guide
 3. Create the configuration file that points the location of the input domain documents and other application settings.
 4. Put the JDBC driver according to your database product.
 5. Run the command provided by the tool.
+
+Need Help?
+----------
+
+Check [our Wikipage](https://github.com/obidea/semantika-api/wiki) for a brief introduction.
+Need more help? Join [OBDA Semantika Forum](https://groups.google.com/forum/#!forum/obda-semantika).
