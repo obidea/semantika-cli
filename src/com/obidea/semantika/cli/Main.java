@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
@@ -46,7 +45,7 @@ import com.obidea.semantika.util.StringUtils;
 @SuppressWarnings("static-access")
 public class Main
 {
-   private static final String VERSION_NUMBER = "1.0"; //$NON-NLS-1$
+   private static final String VERSION_NUMBER = "1.0.1"; //$NON-NLS-1$
    private static final String SEMANTIKA_CORE_VERSION_NUMBER = "1.0"; //$NON-NLS-1$
 
    private static Options sOptions = new Options();
@@ -60,35 +59,35 @@ public class Main
             OptionBuilder.withLongOpt(CliEnvironment.CONFIG)
             .withDescription("path to Semantika configuration file (default=./configuration.xml)") //$NON-NLS-1$
             .hasArg()
-            .withArgName("PATH") //$NON-NLS-1$
+            .withArgName("=path") //$NON-NLS-1$
             .create());
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.QUERY)
             .withDescription("path to SPARQL query file") //$NON-NLS-1$
             .hasArg()
-            .withArgName("PATH") //$NON-NLS-1$
+            .withArgName("=path") //$NON-NLS-1$
             .create());
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.OUTPUT)
             .withDescription("path to output file to flush the result") //$NON-NLS-1$
             .hasArg()
-            .withArgName("PATH") //$NON-NLS-1$
+            .withArgName("=path") //$NON-NLS-1$
             .create());
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.FORMAT)
-            .withDescription("flush result in selected format (FORMAT=N3|Turtle|XML|JSON)") //$NON-NLS-1$
+            .withDescription("flush result in selected format") //$NON-NLS-1$
             .hasArg()
-            .withArgName("FORMAT") //$NON-NLS-1$
+            .withArgName("N3|TTL|XML|JSON") //$NON-NLS-1$
             .create("f")); //$NON-NLS-1$
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.LIMIT)
             .withDescription("limit the number of returned query result") //$NON-NLS-1$
             .hasArg()
-            .withArgName("SIZE") //$NON-NLS-1$
+            .withArgName("size") //$NON-NLS-1$
             .create("l")); //$NON-NLS-1$
    }
 
-   private static HelpFormatter mFormatter = new HelpFormatter();
+   private static CustomHelpFormatter mFormatter = new CustomHelpFormatter();
 
    public static void main(String[] args)
    {
@@ -208,7 +207,7 @@ public class Main
       if (format.equals("N3")) { //$NON-NLS-1$
          return manager.createMaterializerEngine().useNTriples();
       }
-      else if (format.equals("Turtle")) { //$NON-NLS-1$
+      else if (format.equals("TTL")) { //$NON-NLS-1$
          return manager.createMaterializerEngine().useTurtle();
       }
       else if (format.equals("XML")) { //$NON-NLS-1$
@@ -274,7 +273,7 @@ public class Main
    {
       String format = optionLine.getOptionValue(CliEnvironment.FORMAT);
       if (StringUtils.isEmpty(format)) {
-         format = "Turtle"; //$NON-NLS-1$ - by default
+         format = "TTL"; //$NON-NLS-1$ - by default
       }
       return format;
    }
@@ -391,12 +390,18 @@ public class Main
     */
    private static void printUsage()
    {
-      String helpText = String.format("semantika [%s|%s] [OPTION]...", CliEnvironment.QUERYANSWER_OP, CliEnvironment.MATERIALIZE_OP); //$NON-NLS-1$
-      String header = ""; //$NON-NLS-1$
-      String footer = 
+      StringBuilder usage = new StringBuilder();
+      usage.append(String.format("semantika %s [OPTIONS...]\n", CliEnvironment.QUERYANSWER_OP));
+      usage.append("           (to execute query answer)\n");
+      usage.append(String.format("       semantika %s [OPTIONS...]\n", CliEnvironment.MATERIALIZE_OP));
+      usage.append("           (to execute RDB2RDF export)");
+      String header = "where OPTIONS include:"; //$NON-NLS-1$
+      String footer =
             "\nExample:\n" + //$NON-NLS-1$
-            "   ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100\n" + //$NON-NLS-1$
-            "   ./semantika materialize --config=configuration.xml --output=output.n3 -f N3"; //$NON-NLS-1$
-      mFormatter.printHelp(400, helpText, header, sOptions, footer);
+            "  ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100\n" + //$NON-NLS-1$
+            "  ./semantika materialize --config=configuration.xml --output=output.n3 -f N3"; //$NON-NLS-1$
+      mFormatter.setOptionComparator(null);
+      mFormatter.printHelp(400, usage.toString(), header, sOptions, footer);
+//      mFormatter.printHelp(new PrintWriter(System.out), 400, usage.toString(), header, sOptions, 0, 0, footer);
    }
 }
