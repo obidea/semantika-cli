@@ -70,7 +70,7 @@ Here are some examples to export RDB rows into RDF triples which can be useful f
 User's Guide
 ------------
 
-1. Download and unzip the binaries: [semantika-cli-1.1.zip](https://github.com/obidea/semantika-cli/releases/tag/1.1)
+1. Download and unzip the binaries: [semantika-cli-1.1.zip](https://github.com/obidea/semantika-cli/releases/download/v1.1/semantika-cli-1.1.zip)
 2. Create your application-domain model. There are two input documents for declaring the specification, i.e.,
   * `ontology.owl`: specifies the names or labels used in the application.
   * `mapping.xml`: specifies the interconnection between labels and records in database (e.g., Label 'Employee' is connected to records in column 'EMP_ID' in table 'EMPLOYEE_TNT_2010')
