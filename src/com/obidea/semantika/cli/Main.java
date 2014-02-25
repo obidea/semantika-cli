@@ -45,8 +45,8 @@ import com.obidea.semantika.util.StringUtils;
 @SuppressWarnings("static-access")
 public class Main
 {
-   private static final String VERSION_NUMBER = "1.0.1"; //$NON-NLS-1$
-   private static final String SEMANTIKA_CORE_VERSION_NUMBER = "1.0"; //$NON-NLS-1$
+   private static final String VERSION_NUMBER = "1.1"; //$NON-NLS-1$
+   private static final String SEMANTIKA_CORE_VERSION_NUMBER = "1.1"; //$NON-NLS-1$
 
    private static Options sOptions = new Options();
    static {
@@ -193,7 +193,7 @@ public class Main
    private static void materialize(IMaterializerEngine engine, File fout) throws MaterializerEngineException, MaterializationException
    {
       engine.start();
-      engine.materialize(fout);
+      engine.materialize(fout, new ConsoleProgressBar());
       engine.stop();
    }
 
