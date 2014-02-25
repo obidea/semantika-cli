@@ -4,17 +4,25 @@ Semantika CLI
 A command line tool for Semantika engine. This tool is best use for testing your application-domain model.
 
 ```
-usage: semantika [queryanswer|materialize] [OPTION]...
-    --config <PATH>     path to Semantika configuration file (default=./configuration.xml)
- -f,--format <FORMAT>   flush result in selected format (FORMAT=N3|Turtle|XML|JSON)
- -help                  print this message
- -l,--limit <SIZE>      limit the number of returned query result
-    --output <PATH>     path to output file to flush the result
- -q,--quiet             be extra quiet
-    --query <PATH>      path to SPARQL query file
- -sql                   show the generated SQL
- -v,--verbose           be extra verbose
- -version               print the version information and exit
+usage: semantika queryanswer [OPTIONS...]
+           (to execute query answer)
+       semantika materialize [OPTIONS...]
+           (to execute RDB2RDF export)
+where OPTIONS include:
+    --config <=path>             path to Semantika configuration file (default=./configuration.xml)
+ -f,--format <N3|TTL|XML|JSON>   flush result in selected format
+ -help                           print this message
+ -l,--limit <size>               limit the number of returned query result
+    --output <=path>             path to output file to flush the result
+ -q,--quiet                      be extra quiet
+    --query <=path>              path to SPARQL query file
+ -sql                            show the generated SQL
+ -v,--verbose                    be extra verbose
+ -version                        print the version information and exit
+
+Example:
+  ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100
+  ./semantika materialize --config=configuration.xml --output=output.n3 -f N3
 ```
 
 The tool serve two main functions as: (1) SPARQL query tool and (2) RDB2RDF export tool.
@@ -62,7 +70,7 @@ Here are some examples to export RDB rows into RDF triples which can be useful f
 User's Guide
 ------------
 
-1. Download and unzip the binaries: [semantika-cli-1.0.zip](https://github.com/obidea/semantika-cli/releases/tag/1.0)
+1. Download and unzip the binaries: [semantika-cli-1.1.zip](https://github.com/obidea/semantika-cli/releases/tag/1.1)
 2. Create your application-domain model. There are two input documents for declaring the specification, i.e.,
   * `ontology.owl`: specifies the names or labels used in the application.
   * `mapping.xml`: specifies the interconnection between labels and records in database (e.g., Label 'Employee' is connected to records in column 'EMP_ID' in table 'EMPLOYEE_TNT_2010')
