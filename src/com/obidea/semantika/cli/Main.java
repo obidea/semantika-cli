@@ -59,31 +59,31 @@ public class Main
             OptionBuilder.withLongOpt(CliEnvironment.CONFIG)
             .withDescription("path to Semantika configuration file (default=./configuration.xml)") //$NON-NLS-1$
             .hasArg()
-            .withArgName("=path") //$NON-NLS-1$
+            .withArgName("=PATH") //$NON-NLS-1$
             .create());
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.QUERY)
             .withDescription("path to SPARQL query file") //$NON-NLS-1$
             .hasArg()
-            .withArgName("=path") //$NON-NLS-1$
+            .withArgName("=PATH") //$NON-NLS-1$
             .create());
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.OUTPUT)
             .withDescription("path to output file to flush the result") //$NON-NLS-1$
             .hasArg()
-            .withArgName("=path") //$NON-NLS-1$
+            .withArgName("=PATH") //$NON-NLS-1$
             .create());
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.FORMAT)
-            .withDescription("flush result in selected format") //$NON-NLS-1$
+            .withDescription("flush result in selected format (options: N3,TTL,XML,JSON)") //$NON-NLS-1$
             .hasArg()
-            .withArgName("N3|TTL|XML|JSON") //$NON-NLS-1$
+            .withArgName("FORMAT") //$NON-NLS-1$
             .create("f")); //$NON-NLS-1$
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.LIMIT)
             .withDescription("limit the number of returned query result") //$NON-NLS-1$
             .hasArg()
-            .withArgName("size") //$NON-NLS-1$
+            .withArgName("SIZE") //$NON-NLS-1$
             .create("l")); //$NON-NLS-1$
    }
 
@@ -402,6 +402,5 @@ public class Main
             "  ./semantika materialize --config=configuration.xml --output=output.n3 -f N3"; //$NON-NLS-1$
       mFormatter.setOptionComparator(null);
       mFormatter.printHelp(400, usage.toString(), header, sOptions, footer);
-//      mFormatter.printHelp(new PrintWriter(System.out), 400, usage.toString(), header, sOptions, 0, 0, footer);
    }
 }
