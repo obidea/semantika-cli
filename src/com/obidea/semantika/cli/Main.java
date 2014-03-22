@@ -32,13 +32,13 @@ import org.apache.log4j.Logger;
 
 import com.obidea.semantika.app.ApplicationFactory;
 import com.obidea.semantika.app.ApplicationManager;
+import com.obidea.semantika.exception.SemantikaException;
 import com.obidea.semantika.materializer.IMaterializerEngine;
 import com.obidea.semantika.materializer.MaterializationException;
 import com.obidea.semantika.materializer.MaterializerEngineException;
 import com.obidea.semantika.queryanswer.IQueryEngine;
 import com.obidea.semantika.queryanswer.IQueryEngineExt;
 import com.obidea.semantika.queryanswer.QueryEngineException;
-import com.obidea.semantika.queryanswer.QueryEvaluationException;
 import com.obidea.semantika.queryanswer.result.IQueryResult;
 import com.obidea.semantika.util.StringUtils;
 
@@ -46,7 +46,7 @@ import com.obidea.semantika.util.StringUtils;
 public class Main
 {
    private static final String VERSION_NUMBER = "1.1"; //$NON-NLS-1$
-   private static final String SEMANTIKA_CORE_VERSION_NUMBER = "1.1"; //$NON-NLS-1$
+   private static final String SEMANTIKA_CORE_VERSION_NUMBER = "1.1.5"; //$NON-NLS-1$
 
    private static Options sOptions = new Options();
    static {
@@ -158,12 +158,12 @@ public class Main
       }
    }
 
-   private static void queryanswer(IQueryEngine engine, File fquery, int limit, boolean showSql) throws QueryEngineException, QueryEvaluationException, IOException
+   private static void queryanswer(IQueryEngine engine, File fquery, int limit, boolean showSql) throws QueryEngineException, SemantikaException, IOException
    {
       String sparql = FileUtils.readFileToString(fquery, "UTF-8"); //$NON-NLS-1$
       engine.start();
       if (showSql) {
-         printSql(sparql, engine, limit);
+         printSql(sparql, engine);
       }
       else {
          flushResult(evaluateQuery(sparql, engine, limit));
@@ -171,18 +171,13 @@ public class Main
       engine.stop();
    }
 
-   private static void printSql(String sparql, IQueryEngine engine, int limit) throws QueryEvaluationException
+   private static void printSql(String sparql, IQueryEngine engine) throws SemantikaException
    {
-      if (engine instanceof IQueryEngineExt) {
-         String sql = ((IQueryEngineExt) engine).createQuery(sparql).setMaxResults(limit).getString();
-         System.out.println(sql);
-      }
-      else {
-         System.err.println("Feature is not supported by the query engine"); //$NON-NLS-1$
-      }
+      String sql = engine.translate(sparql);
+      System.out.println(sql);
    }
 
-   private static IQueryResult evaluateQuery(String sparql, IQueryEngine engine, int limit) throws QueryEvaluationException
+   private static IQueryResult evaluateQuery(String sparql, IQueryEngine engine, int limit) throws SemantikaException
    {
       if (engine instanceof IQueryEngineExt) {
          return ((IQueryEngineExt) engine).createQuery(sparql).setMaxResults(limit).evaluate();
