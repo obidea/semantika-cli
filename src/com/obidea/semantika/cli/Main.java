@@ -136,10 +136,10 @@ public class Main
 
    private static void executeOperation(String operation, CommandLine optionLine) throws Exception
    {
-      File config = determineConfigurationFile(optionLine);
-      ApplicationManager manager = new ApplicationFactory().configure(config).createApplicationManager();
-      
       if (operation.equals(CliEnvironment.QUERYANSWER_OP)) {
+         File config = determineConfigurationFile(optionLine);
+         ApplicationManager manager = new ApplicationFactory().configure(config).createApplicationManager();
+         
          File fquery = determineQueryFile(optionLine);
          int limit = determineResultLimit(optionLine);
          IQueryEngine engine = createQueryEngine(manager);
@@ -148,12 +148,16 @@ public class Main
          queryanswer(engine, fquery, limit, showSql);
       }
       else if (operation.equals(CliEnvironment.MATERIALIZE_OP)) {
+         File config = determineConfigurationFile(optionLine);
+         ApplicationManager manager = new ApplicationFactory().configure(config).createApplicationManager();
+         
          String format = determineOutputFormat(optionLine);
          File fout = determineOutputFile(optionLine);
          IMaterializerEngine engine = createMaterializerEngine(manager, format);
          materialize(engine, fout);
       }
       else {
+         System.err.println("Invalid command"); //$NON-NLS-1$
          printUsage();
       }
    }
