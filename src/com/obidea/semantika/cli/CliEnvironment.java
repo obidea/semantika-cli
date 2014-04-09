@@ -22,15 +22,22 @@ public class CliEnvironment
 
    public static final String HELP = "help"; //$NON-NLS-1$
    public static final String VERSION = "version"; //$NON-NLS-1$
+
    public static final String VERBOSE = "verbose"; //$NON-NLS-1$
+   public static final String VERBOSE_SHORTCUT = "v"; //$NON-NLS-1$
+
    public static final String QUIET = "quiet"; //$NON-NLS-1$
+   public static final String QUIET_SHORTCUT = "q"; //$NON-NLS-1$
 
    public static final String CONFIG = "config"; //$NON-NLS-1$
    public static final String OUTPUT = "output"; //$NON-NLS-1$
    public static final String QUERY = "query"; //$NON-NLS-1$
 
    public static final String FORMAT = "format"; //$NON-NLS-1$
+   public static final String FORMAT_SHORTCUT = "f"; //$NON-NLS-1$
 
    public static final String LIMIT = "limit"; //$NON-NLS-1$
+   public static final String LIMIT_SHORTCUT = "l"; //$NON-NLS-1$
+
    public static final String SHOW_SQL = "sql"; //$NON-NLS-1$
 }

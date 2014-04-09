@@ -53,8 +53,8 @@ public class Main
       sOptions.addOption(CliEnvironment.HELP, false, "print this message"); //$NON-NLS-1$
       sOptions.addOption(CliEnvironment.VERSION, false, "print the version information and exit"); //$NON-NLS-1$
       sOptions.addOption(CliEnvironment.SHOW_SQL, false, "show the generated SQL (for 'queryanswer' only)"); //$NON-NLS-1$
-      sOptions.addOption("v", CliEnvironment.VERBOSE, false, "be extra verbose"); //$NON-NLS-1$ //$NON-NLS-2$
-      sOptions.addOption("q", CliEnvironment.QUIET, false, "be extra quiet"); //$NON-NLS-1$ //$NON-NLS-2$
+      sOptions.addOption(CliEnvironment.VERBOSE_SHORTCUT, CliEnvironment.VERBOSE, false, "be extra verbose"); //$NON-NLS-1$
+      sOptions.addOption(CliEnvironment.QUIET_SHORTCUT, CliEnvironment.QUIET, false, "be extra quiet"); //$NON-NLS-1$
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.CONFIG)
             .withDescription("path to Semantika configuration file (default=./configuration.xml)") //$NON-NLS-1$
@@ -78,13 +78,13 @@ public class Main
             .withDescription("flush result in selected format (options: N3,TTL,XML,JSON)") //$NON-NLS-1$
             .hasArg()
             .withArgName("FORMAT") //$NON-NLS-1$
-            .create("f")); //$NON-NLS-1$
+            .create(CliEnvironment.FORMAT_SHORTCUT));
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.LIMIT)
             .withDescription("limit the number of returned query result") //$NON-NLS-1$
             .hasArg()
             .withArgName("SIZE") //$NON-NLS-1$
-            .create("l")); //$NON-NLS-1$
+            .create(CliEnvironment.LIMIT_SHORTCUT));
    }
 
    private static CustomHelpFormatter mFormatter = new CustomHelpFormatter();
