@@ -256,7 +256,7 @@ public class Main
    {
       String config = optionLine.getOptionValue(CliEnvironment.CONFIG); //$NON-NLS-1$
       if (StringUtils.isEmpty(config)) {
-         return new File("configuration.xml"); //$NON-NLS-1$
+         return new File(ApplicationFactory.DEFAULT_CONFIGURATION_FILENAME); //$NON-NLS-1$
       }
       return new File(config);
    }
