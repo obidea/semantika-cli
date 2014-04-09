@@ -9,16 +9,16 @@ usage: semantika queryanswer [OPTIONS...]
        semantika materialize [OPTIONS...]
            (to execute RDB2RDF export)
 where OPTIONS include:
-    --config <=PATH>         path to Semantika configuration file (default=./configuration.xml)
- -f,--format <FORMAT>        flush result in selected format (options: N3,TTL,XML,JSON)
- -help                       print this message
- -l,--limit <SIZE>           limit the number of returned query result
-    --output <=PATH>         path to output file to flush the result
- -q,--quiet                  be extra quiet
-    --query <=PATH>          path to SPARQL query file
- -sql                        show the generated SQL
- -v,--verbose                be extra verbose
- -version                    print the version information and exit
+    --config <=PATH>      path to Semantika configuration file (default=./configuration.xml)
+ -f,--format <FORMAT>     flush result in selected format (options: N3,TTL,XML,JSON)
+ -help                    print this message
+ -l,--limit <SIZE>        limit the number of returned query result
+    --output <=PATH>      path to output file to flush the result
+ -q,--quiet               be extra quiet
+    --query <=PATH>       path to SPARQL query file
+ -sql                     show the generated SQL (for 'queryanswer' only)
+ -v,--verbose             be extra verbose
+ -version                 print the version information and exit
 
 Example:
   ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100
