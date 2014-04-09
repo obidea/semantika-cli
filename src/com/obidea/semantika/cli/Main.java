@@ -52,7 +52,7 @@ public class Main
    static {
       sOptions.addOption(CliEnvironment.HELP, false, "print this message"); //$NON-NLS-1$
       sOptions.addOption(CliEnvironment.VERSION, false, "print the version information and exit"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.SHOW_SQL, false, "show the generated SQL"); //$NON-NLS-1$ //$NON-NLS-2$
+      sOptions.addOption(CliEnvironment.SHOW_SQL, false, "show the generated SQL (for 'queryanswer' only)"); //$NON-NLS-1$
       sOptions.addOption("v", CliEnvironment.VERBOSE, false, "be extra verbose"); //$NON-NLS-1$ //$NON-NLS-2$
       sOptions.addOption("q", CliEnvironment.QUIET, false, "be extra quiet"); //$NON-NLS-1$ //$NON-NLS-2$
       sOptions.addOption(
