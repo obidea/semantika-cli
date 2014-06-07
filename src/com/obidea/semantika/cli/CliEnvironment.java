@@ -17,7 +17,7 @@ package com.obidea.semantika.cli;
 
 public class CliEnvironment
 {
-   public static final String MATERIALIZE_OP = "materialize"; //$NON-NLS-1$
+   public static final String MATERIALIZE_OP = "rdb2rdf"; //$NON-NLS-1$
    public static final String QUERYANSWER_OP = "queryanswer"; //$NON-NLS-1$
 
    public static final String HELP = "help"; //$NON-NLS-1$
