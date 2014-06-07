@@ -16,7 +16,7 @@
 #
 
 # Semantika version
-VERSION=1.1
+VERSION=1.2
 
 # Save current directory
 OLDDIR=`pwd`

@@ -45,7 +45,7 @@ import com.obidea.semantika.util.StringUtils;
 @SuppressWarnings("static-access")
 public class Main
 {
-   private static final String VERSION_NUMBER = "1.1"; //$NON-NLS-1$
+   private static final String VERSION_NUMBER = "1.2"; //$NON-NLS-1$
    private static final String SEMANTIKA_CORE_VERSION_NUMBER = "1.4"; //$NON-NLS-1$
 
    private static Options sOptions = new Options();
@@ -398,7 +398,7 @@ public class Main
       String footer =
             "\nExample:\n" + //$NON-NLS-1$
             "  ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100\n" + //$NON-NLS-1$
-            "  ./semantika materialize --config=configuration.xml --output=output.n3 -f N3"; //$NON-NLS-1$
+            "  ./semantika rdb2rdf --config=configuration.xml --output=output.n3 -f N3"; //$NON-NLS-1$
       mFormatter.setOptionComparator(null);
       mFormatter.printHelp(400, usage.toString(), header, sOptions, footer);
    }
