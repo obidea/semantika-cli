@@ -35,19 +35,19 @@ Here are some examples on querying data in database using SPARQL (rather than no
 * Simple data query
 
 ```
-./semantika queryanswer --config=configuration.xml --query=query.txt --quiet
+./semantika queryanswer --config=application.cfg.xml --query=query.txt --quiet
 ```
 
 * Data query with max result number (LIMIT=100)
 
 ```
-./semantika queryanswer --config=configuration.xml --query=query.txt -l 100 --quiet
+./semantika queryanswer --config=application.cfg.xml --query=query.txt -l 100 --quiet
 ```
 
 * Show the generated SQL from the given input query.
 
 ```
-./semantika queryanswer --config=configuration.xml --query=query.txt -sql --quiet
+./semantika queryanswer --config=application.cfg.xml --query=query.txt -sql --quiet
 ```
 
 RDB2RDF Export Tool
@@ -58,13 +58,13 @@ Here are some examples to export RDB rows into RDF triples which can be useful f
 * Export data to NTriples format
 
 ```
-./semantika rdb2rdf --config=configuration.xml --output=output.n3 -f N3
+./semantika rdb2rdf --config=application.cfg.xml --output=output.n3 -f N3
 ```
 
 * Export data to JSON format in silent mode
 
 ```
-./semantika rdb2rdf --config=configuration.xml --output=output.n3 -f N3 --quiet
+./semantika rdb2rdf --config=application.cfg.xml --output=output.n3 -f N3 --quiet
 ```
 
 User's Guide
