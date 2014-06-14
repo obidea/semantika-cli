@@ -397,8 +397,8 @@ public class Main
       String header = "where OPTIONS include:"; //$NON-NLS-1$
       String footer =
             "\nExample:\n" + //$NON-NLS-1$
-            "  ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100\n" + //$NON-NLS-1$
-            "  ./semantika rdb2rdf --config=configuration.xml --output=output.n3 -f N3"; //$NON-NLS-1$
+            "  ./semantika queryanswer --config=application.cfg.xml --query=query.txt -l 100\n" + //$NON-NLS-1$
+            "  ./semantika rdb2rdf --config=application.cfg.xml --output=output.n3 -f N3"; //$NON-NLS-1$
       mFormatter.setOptionComparator(null);
       mFormatter.printHelp(400, usage.toString(), header, sOptions, footer);
    }
