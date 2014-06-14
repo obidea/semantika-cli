@@ -6,7 +6,7 @@ A command line tool for Semantika engine. This tool is best use for testing your
 ```
 usage: semantika queryanswer [OPTIONS...]
            (to execute query answer)
-       semantika materialize [OPTIONS...]
+       semantika rdb2rdf [OPTIONS...]
            (to execute RDB2RDF export)
 where OPTIONS include:
     --config <=PATH>      path to Semantika configuration file (default=./configuration.xml)
@@ -21,8 +21,8 @@ where OPTIONS include:
  -version                 print the version information and exit
 
 Example:
-  ./semantika queryanswer --config=configuration.xml --query=query.txt -l 100
-  ./semantika materialize --config=configuration.xml --output=output.n3 -f N3
+  ./semantika queryanswer --config=application.cfg.xml --query=query.txt -l 100
+  ./semantika rdb2rdf --config=application.cfg.xml --output=output.n3 -f N3
 ```
 
 The tool serve two main functions as: (1) SPARQL query tool and (2) RDB2RDF export tool.
@@ -58,13 +58,13 @@ Here are some examples to export RDB rows into RDF triples which can be useful f
 * Export data to NTriples format
 
 ```
-./semantika materialize --config=configuration.xml --output=output.n3 -f N3
+./semantika rdb2rdf --config=configuration.xml --output=output.n3 -f N3
 ```
 
 * Export data to JSON format in silent mode
 
 ```
-./semantika materialize --config=configuration.xml --output=output.n3 -f N3 --quiet
+./semantika rdb2rdf --config=configuration.xml --output=output.n3 -f N3 --quiet
 ```
 
 User's Guide
