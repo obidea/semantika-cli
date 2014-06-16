@@ -1,7 +1,9 @@
 Semantika CLI
 =============
 
-A command line tool for Semantika engine. This tool is best use for testing your application-domain model.
+A Unix-based command line utility for debugging, querying and exporting data.
+
+Latest news: [1.2 (build 16) is available](https://github.com/obidea/semantika-cli/releases/tag/v1.2_16) (June 17, 2014)
 
 ```
 usage: semantika queryanswer [OPTIONS...]
