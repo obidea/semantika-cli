@@ -49,36 +49,36 @@ public class Main
 
    private static Options sOptions = new Options();
    static {
-      sOptions.addOption(CliEnvironment.HELP, false, "print this message"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.VERSION, false, "print the version information and exit"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.SHOW_SQL, false, "show the generated SQL (for 'queryanswer' only)"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.VERBOSE_SHORTCUT, CliEnvironment.VERBOSE, false, "be extra verbose"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.QUIET_SHORTCUT, CliEnvironment.QUIET, false, "be extra quiet"); //$NON-NLS-1$
-      sOptions.addOption(CliEnvironment.QUERY, true, "input SPARQL query"); //$NON-NLS-1$
+      sOptions.addOption(Environment.HELP, false, "print this message"); //$NON-NLS-1$
+      sOptions.addOption(Environment.VERSION, false, "print the version information and exit"); //$NON-NLS-1$
+      sOptions.addOption(Environment.SHOW_SQL, false, "show the generated SQL (for 'queryanswer' only)"); //$NON-NLS-1$
+      sOptions.addOption(Environment.VERBOSE_SHORTCUT, Environment.VERBOSE, false, "be extra verbose"); //$NON-NLS-1$
+      sOptions.addOption(Environment.QUIET_SHORTCUT, Environment.QUIET, false, "be extra quiet"); //$NON-NLS-1$
+      sOptions.addOption(Environment.QUERY, true, "input SPARQL query"); //$NON-NLS-1$
       sOptions.addOption(
-            OptionBuilder.withLongOpt(CliEnvironment.CONFIG)
+            OptionBuilder.withLongOpt(Environment.CONFIG)
             .withDescription("path to Semantika configuration file (default=./application.cfg.xml)") //$NON-NLS-1$
             .hasArg()
             .withArgName("=PATH") //$NON-NLS-1$
-            .create(CliEnvironment.CONFIG_SHORTCUT));
+            .create(Environment.CONFIG_SHORTCUT));
       sOptions.addOption(
-            OptionBuilder.withLongOpt(CliEnvironment.OUTPUT)
+            OptionBuilder.withLongOpt(Environment.OUTPUT)
             .withDescription("path to output file to flush the result") //$NON-NLS-1$
             .hasArg()
             .withArgName("=PATH") //$NON-NLS-1$
-            .create(CliEnvironment.OUTPUT_SHORTCUT));
+            .create(Environment.OUTPUT_SHORTCUT));
       sOptions.addOption(
-            OptionBuilder.withLongOpt(CliEnvironment.FORMAT)
+            OptionBuilder.withLongOpt(Environment.FORMAT)
             .withDescription("flush result in selected format (options: N3,TTL,XML,JSON)") //$NON-NLS-1$
             .hasArg()
             .withArgName("FORMAT") //$NON-NLS-1$
-            .create(CliEnvironment.FORMAT_SHORTCUT));
+            .create(Environment.FORMAT_SHORTCUT));
       sOptions.addOption(
-            OptionBuilder.withLongOpt(CliEnvironment.LIMIT)
+            OptionBuilder.withLongOpt(Environment.LIMIT)
             .withDescription("limit the number of returned query result") //$NON-NLS-1$
             .hasArg()
             .withArgName("SIZE") //$NON-NLS-1$
-            .create(CliEnvironment.LIMIT_SHORTCUT));
+            .create(Environment.LIMIT_SHORTCUT));
    }
 
    private static CustomHelpFormatter mFormatter = new CustomHelpFormatter();
@@ -94,11 +94,11 @@ public class Main
          CommandLineParser parser = new GnuParser();
          CommandLine optionLine = parser.parse(sOptions, args);
          
-         if (optionLine.hasOption(CliEnvironment.VERSION)) {
+         if (optionLine.hasOption(Environment.VERSION)) {
             printVersion();
             System.exit(0);
          }
-         if (optionLine.hasOption(CliEnvironment.HELP)) {
+         if (optionLine.hasOption(Environment.HELP)) {
             printUsage();
             System.exit(0);
          }
@@ -120,17 +120,17 @@ public class Main
 
    private static void setupLoggers(CommandLine optionLine, List<Logger> loggers)
    {
-      if (optionLine.hasOption(CliEnvironment.VERBOSE)) {
+      if (optionLine.hasOption(Environment.VERBOSE)) {
          verbose(loggers);
       }
-      else if (optionLine.hasOption(CliEnvironment.QUIET)) {
+      else if (optionLine.hasOption(Environment.QUIET)) {
          quiet(loggers);
       }
    }
 
    private static void executeOperation(String operation, CommandLine optionLine) throws Exception
    {
-      if (operation.equals(CliEnvironment.QUERYANSWER_OP)) {
+      if (operation.equals(Environment.QUERYANSWER_OP)) {
          File config = determineConfigurationFile(optionLine);
          ApplicationManager manager = new ApplicationFactory().configure(config).createApplicationManager();
          
@@ -141,7 +141,7 @@ public class Main
          boolean showSql = determineShowSql(optionLine);
          queryanswer(engine, sparql, limit, showSql);
       }
-      else if (operation.equals(CliEnvironment.MATERIALIZE_OP)) {
+      else if (operation.equals(Environment.MATERIALIZE_OP)) {
          File config = determineConfigurationFile(optionLine);
          ApplicationManager manager = new ApplicationFactory().configure(config).createApplicationManager();
          
@@ -230,7 +230,7 @@ public class Main
     */
    private static String determineInputSparql(CommandLine optionLine)
    {
-      String query = optionLine.getOptionValue(CliEnvironment.QUERY).trim(); //$NON-NLS-1$
+      String query = optionLine.getOptionValue(Environment.QUERY).trim(); //$NON-NLS-1$
       if (StringUtils.isEmpty(query)) {
          System.err.println("Input query is missing"); //$NON-NLS-1$
          System.exit(1);
@@ -247,7 +247,7 @@ public class Main
     */
    private static File determineConfigurationFile(CommandLine optionLine)
    {
-      String config = optionLine.getOptionValue(CliEnvironment.CONFIG); //$NON-NLS-1$
+      String config = optionLine.getOptionValue(Environment.CONFIG); //$NON-NLS-1$
       if (StringUtils.isEmpty(config)) {
          return new File(ApplicationFactory.DEFAULT_CONFIGURATION_FILENAME); //$NON-NLS-1$
       }
@@ -263,7 +263,7 @@ public class Main
     */
    private static String determineOutputFormat(CommandLine optionLine)
    {
-      String format = optionLine.getOptionValue(CliEnvironment.FORMAT);
+      String format = optionLine.getOptionValue(Environment.FORMAT);
       if (StringUtils.isEmpty(format)) {
          format = "TTL"; //$NON-NLS-1$ - by default
       }
@@ -279,7 +279,7 @@ public class Main
     */
    private static int determineResultLimit(CommandLine optionLine)
    {
-      String limit = optionLine.getOptionValue(CliEnvironment.LIMIT);
+      String limit = optionLine.getOptionValue(Environment.LIMIT);
       if (StringUtils.isEmpty(limit)) {
          return -1;
       }
@@ -294,7 +294,7 @@ public class Main
     */
    private static boolean determineShowSql(CommandLine optionLine)
    {
-      return optionLine.hasOption(CliEnvironment.SHOW_SQL);
+      return optionLine.hasOption(Environment.SHOW_SQL);
    }
 
    /**
@@ -324,7 +324,7 @@ public class Main
     */
    private static File determineOutputFile(CommandLine optionLine)
    {
-      String output = optionLine.getOptionValue(CliEnvironment.OUTPUT);
+      String output = optionLine.getOptionValue(Environment.OUTPUT);
       if (!StringUtils.isEmpty(output)) {
          return new File(output);
       }
@@ -383,9 +383,9 @@ public class Main
    private static void printUsage()
    {
       StringBuilder usage = new StringBuilder();
-      usage.append(String.format("semantika %s [OPTIONS...]\n", CliEnvironment.QUERYANSWER_OP));
+      usage.append(String.format("semantika %s [OPTIONS...]\n", Environment.QUERYANSWER_OP));
       usage.append("           (to execute query answer)\n");
-      usage.append(String.format("       semantika %s [OPTIONS...]\n", CliEnvironment.MATERIALIZE_OP));
+      usage.append(String.format("       semantika %s [OPTIONS...]\n", Environment.MATERIALIZE_OP));
       usage.append("           (to execute RDB2RDF export)");
       String header = "where OPTIONS include:"; //$NON-NLS-1$
       String footer =
