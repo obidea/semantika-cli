@@ -57,10 +57,10 @@ public class Main
       sOptions.addOption(CliEnvironment.QUIET_SHORTCUT, CliEnvironment.QUIET, false, "be extra quiet"); //$NON-NLS-1$
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.CONFIG)
-            .withDescription("path to Semantika configuration file (default=./configuration.xml)") //$NON-NLS-1$
+            .withDescription("path to Semantika configuration file (default=./application.cfg.xml)") //$NON-NLS-1$
             .hasArg()
             .withArgName("=PATH") //$NON-NLS-1$
-            .create());
+            .create(CliEnvironment.CONFIG_SHORTCUT));
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.QUERY)
             .withDescription("path to SPARQL query file") //$NON-NLS-1$
@@ -72,7 +72,7 @@ public class Main
             .withDescription("path to output file to flush the result") //$NON-NLS-1$
             .hasArg()
             .withArgName("=PATH") //$NON-NLS-1$
-            .create());
+            .create(CliEnvironment.OUTPUT_SHORTCUT));
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.FORMAT)
             .withDescription("flush result in selected format (options: N3,TTL,XML,JSON)") //$NON-NLS-1$

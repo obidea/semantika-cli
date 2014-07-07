@@ -30,7 +30,11 @@ public class CliEnvironment
    public static final String QUIET_SHORTCUT = "q"; //$NON-NLS-1$
 
    public static final String CONFIG = "config"; //$NON-NLS-1$
+   public static final String CONFIG_SHORTCUT = "c"; //$NON-NLS-1$
+
    public static final String OUTPUT = "output"; //$NON-NLS-1$
+   public static final String OUTPUT_SHORTCUT = "o"; //$NON-NLS-1$
+
    public static final String QUERY = "query"; //$NON-NLS-1$
 
    public static final String FORMAT = "format"; //$NON-NLS-1$
