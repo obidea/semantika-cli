@@ -25,7 +25,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -55,18 +54,13 @@ public class Main
       sOptions.addOption(CliEnvironment.SHOW_SQL, false, "show the generated SQL (for 'queryanswer' only)"); //$NON-NLS-1$
       sOptions.addOption(CliEnvironment.VERBOSE_SHORTCUT, CliEnvironment.VERBOSE, false, "be extra verbose"); //$NON-NLS-1$
       sOptions.addOption(CliEnvironment.QUIET_SHORTCUT, CliEnvironment.QUIET, false, "be extra quiet"); //$NON-NLS-1$
+      sOptions.addOption(CliEnvironment.QUERY, true, "input SPARQL query"); //$NON-NLS-1$
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.CONFIG)
             .withDescription("path to Semantika configuration file (default=./application.cfg.xml)") //$NON-NLS-1$
             .hasArg()
             .withArgName("=PATH") //$NON-NLS-1$
             .create(CliEnvironment.CONFIG_SHORTCUT));
-      sOptions.addOption(
-            OptionBuilder.withLongOpt(CliEnvironment.QUERY)
-            .withDescription("path to SPARQL query file") //$NON-NLS-1$
-            .hasArg()
-            .withArgName("=PATH") //$NON-NLS-1$
-            .create());
       sOptions.addOption(
             OptionBuilder.withLongOpt(CliEnvironment.OUTPUT)
             .withDescription("path to output file to flush the result") //$NON-NLS-1$
@@ -140,12 +134,12 @@ public class Main
          File config = determineConfigurationFile(optionLine);
          ApplicationManager manager = new ApplicationFactory().configure(config).createApplicationManager();
          
-         File fquery = determineQueryFile(optionLine);
+         String sparql = determineInputSparql(optionLine);
          int limit = determineResultLimit(optionLine);
          IQueryEngine engine = createQueryEngine(manager);
          
          boolean showSql = determineShowSql(optionLine);
-         queryanswer(engine, fquery, limit, showSql);
+         queryanswer(engine, sparql, limit, showSql);
       }
       else if (operation.equals(CliEnvironment.MATERIALIZE_OP)) {
          File config = determineConfigurationFile(optionLine);
@@ -162,9 +156,8 @@ public class Main
       }
    }
 
-   private static void queryanswer(IQueryEngine engine, File fquery, int limit, boolean showSql) throws QueryEngineException, SemantikaException, IOException
+   private static void queryanswer(IQueryEngine engine, String sparql, int limit, boolean showSql) throws QueryEngineException, SemantikaException, IOException
    {
-      String sparql = FileUtils.readFileToString(fquery, "UTF-8"); //$NON-NLS-1$
       engine.start();
       if (showSql) {
          printSql(sparql, engine);
@@ -229,20 +222,20 @@ public class Main
    }
 
    /**
-    * Determines the file to use for reading the SPARQL query.
+    * Determines the input SPARQL string.
     * 
     * @param optionLine
     *           The command-line arguments passed in.
-    * @return The path of the query file on disk.
+    * @return The query string.
     */
-   private static File determineQueryFile(CommandLine optionLine)
+   private static String determineInputSparql(CommandLine optionLine)
    {
-      String query = optionLine.getOptionValue(CliEnvironment.QUERY); //$NON-NLS-1$
+      String query = optionLine.getOptionValue(CliEnvironment.QUERY).trim(); //$NON-NLS-1$
       if (StringUtils.isEmpty(query)) {
-         System.err.println("Query file is missing"); //$NON-NLS-1$
+         System.err.println("Input query is missing"); //$NON-NLS-1$
          System.exit(1);
       }
-      return new File(query);
+      return query;
    }
 
    /**
