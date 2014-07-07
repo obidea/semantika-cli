@@ -44,8 +44,8 @@ import com.obidea.semantika.util.StringUtils;
 @SuppressWarnings("static-access")
 public class Main
 {
-   private static final String VERSION_NUMBER = "1.2"; //$NON-NLS-1$
-   private static final String SEMANTIKA_CORE_VERSION_NUMBER = "1.6"; //$NON-NLS-1$
+   private static final String VERSION_NUMBER = "1.3"; //$NON-NLS-1$
+   private static final String SEMANTIKA_CORE_VERSION_NUMBER = "1.7"; //$NON-NLS-1$
 
    private static Options sOptions = new Options();
    static {
