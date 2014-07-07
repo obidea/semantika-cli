@@ -59,25 +59,25 @@ public class Main
             OptionBuilder.withLongOpt(Environment.CONFIG)
             .withDescription("path to Semantika configuration file (default=./application.cfg.xml)") //$NON-NLS-1$
             .hasArg()
-            .withArgName("=PATH") //$NON-NLS-1$
+            .withArgName("path") //$NON-NLS-1$
             .create(Environment.CONFIG_SHORTCUT));
       sOptions.addOption(
             OptionBuilder.withLongOpt(Environment.OUTPUT)
             .withDescription("path to output file to flush the result") //$NON-NLS-1$
             .hasArg()
-            .withArgName("=PATH") //$NON-NLS-1$
+            .withArgName("path") //$NON-NLS-1$
             .create(Environment.OUTPUT_SHORTCUT));
       sOptions.addOption(
             OptionBuilder.withLongOpt(Environment.FORMAT)
             .withDescription("flush result in selected format (options: N3,TTL,XML,JSON)") //$NON-NLS-1$
             .hasArg()
-            .withArgName("FORMAT") //$NON-NLS-1$
+            .withArgName("format") //$NON-NLS-1$
             .create(Environment.FORMAT_SHORTCUT));
       sOptions.addOption(
             OptionBuilder.withLongOpt(Environment.LIMIT)
             .withDescription("limit the number of returned query result") //$NON-NLS-1$
             .hasArg()
-            .withArgName("SIZE") //$NON-NLS-1$
+            .withArgName("size") //$NON-NLS-1$
             .create(Environment.LIMIT_SHORTCUT));
    }
 
