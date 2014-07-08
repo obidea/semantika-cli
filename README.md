@@ -3,7 +3,7 @@ Semantika CLI
 
 A Unix-based command line utility for debugging, querying and exporting data.
 
-Latest news: [1.2 (build 16) is available](https://github.com/obidea/semantika-cli/releases/tag/v1.2_16) (June 17, 2014)
+Latest news: [1.3 (build 17) is available](https://github.com/obidea/semantika-cli/releases/tag/v1.3_17) (July 8, 2014)
 
 ```
 usage: semantika queryanswer [OPTIONS...]
@@ -11,20 +11,20 @@ usage: semantika queryanswer [OPTIONS...]
        semantika rdb2rdf [OPTIONS...]
            (to execute RDB2RDF export)
 where OPTIONS include:
-    --config <=PATH>      path to Semantika configuration file (default=./configuration.xml)
- -f,--format <FORMAT>     flush result in selected format (options: N3,TTL,XML,JSON)
- -help                    print this message
- -l,--limit <SIZE>        limit the number of returned query result
-    --output <=PATH>      path to output file to flush the result
- -q,--quiet               be extra quiet
-    --query <=PATH>       path to SPARQL query file
- -sql                     show the generated SQL (for 'queryanswer' only)
- -v,--verbose             be extra verbose
- -version                 print the version information and exit
+ -c,--config <path>     path to Semantika configuration file (default=./application.cfg.xml)
+ -f,--format <format>   flush result in selected format (options: N3,TTL,XML,JSON)
+ -help                  print this message
+ -l,--limit <size>      limit the number of returned query result
+ -o,--output <path>     path to output file to flush the result
+ -q,--quiet             be extra quiet
+ -sparql <arg>          input SPARQL query
+ -sql                   show the generated SQL (for 'queryanswer' only)
+ -v,--verbose           be extra verbose
+ -version               print the version information and exit
 
 Example:
-  ./semantika queryanswer --config=application.cfg.xml --query=query.txt -l 100
-  ./semantika rdb2rdf --config=application.cfg.xml --output=output.n3 -f N3
+  ./semantika queryanswer -c application.cfg.xml -l 100 -sparql 'SELECT ?x WHERE { ?x a :Person }'
+  ./semantika rdb2rdf -c application.cfg.xml -o output.n3 -f N3
 ```
 
 The tool serve two main functions as: (1) SPARQL query tool and (2) RDB2RDF export tool.
@@ -32,24 +32,24 @@ The tool serve two main functions as: (1) SPARQL query tool and (2) RDB2RDF expo
 SPARQL Query Tool
 -----------------
 
-Here are some examples on querying data in database using SPARQL (rather than normal SQL).
+Here are some examples on querying data in database using SPARQL. Note that when the `-c` is omitted then the system will search the default configuration `application.cfg.xml` at the classpath.
 
 * Simple data query
 
 ```
-./semantika queryanswer --config=application.cfg.xml --query=query.txt --quiet
+./semantika queryanswer -sparql 'SELECT ?x WHERE { ?x a :Person }' --quiet
 ```
 
 * Data query with max result number (LIMIT=100)
 
 ```
-./semantika queryanswer --config=application.cfg.xml --query=query.txt -l 100 --quiet
+./semantika queryanswer -sparql 'SELECT ?x WHERE { ?x a :Person }' -l 100 --quiet
 ```
 
 * Show the generated SQL from the given input query.
 
 ```
-./semantika queryanswer --config=application.cfg.xml --query=query.txt -sql --quiet
+./semantika queryanswer -sparql 'SELECT ?x WHERE { ?x a :Person }' -sql --quiet
 ```
 
 RDB2RDF Export Tool
@@ -60,24 +60,22 @@ Here are some examples to export RDB rows into RDF triples which can be useful f
 * Export data to NTriples format
 
 ```
-./semantika rdb2rdf --config=application.cfg.xml --output=output.n3 -f N3
+./semantika rdb2rdf -o output.n3 -f N3
 ```
 
 * Export data to JSON format in silent mode
 
 ```
-./semantika rdb2rdf --config=application.cfg.xml --output=output.n3 -f N3 --quiet
+./semantika rdb2rdf -o output.n3 -f N3 --quiet
 ```
 
 User's Guide
 ------------
 
 1. [Download and unzip the latest release](https://github.com/obidea/semantika-cli/releases).
-2. Create your application-domain model. There are two input documents for declaring the specification, i.e.,
-  * `ontology.owl`: specifies the names or labels used in the application domain.
-  * `mapping.xml`: specifies the releation between the labels in ontology and data in database (e.g., Label 'Employee' is connected to records in column 'EMP_ID' in table 'EMPLOYEE_TNT_2010')
-3. Create the configuration file that points the location of the input domain documents and other application settings.
-4. Put the JDBC driver according to your database product.
+2. Create the application-domain model. There are two types of modelling documents, i.e., an OWL ontology document and mapping document(s). The ontology document is an optional.
+3. Create the configuration file. It specifies the location of the model documents and the database connection parameters.
+4. Place the proper JDBC driver inside the `jdbc/` folder
 5. Run the command provided by the tool.
 
 Need Help?
