@@ -73,7 +73,7 @@ User's Guide
 ------------
 
 1. [Download and unzip the latest release](https://github.com/obidea/semantika-cli/releases).
-2. Create the application-domain model. There are two types of modelling documents, i.e., an OWL ontology document and mapping document(s). The ontology document is an optional.
+2. Create the application-domain model. There are two types of modelling documents, i.e., an OWL ontology document and mapping document(s). The ontology document is optional.
 3. Create the configuration file. It specifies the location of the model documents and the database connection parameters.
 4. Place the proper JDBC driver inside the `jdbc/` folder
 5. Run the command provided by the tool.
