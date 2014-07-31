@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -31,7 +32,6 @@ import org.apache.log4j.Logger;
 
 import com.obidea.semantika.app.ApplicationFactory;
 import com.obidea.semantika.app.ApplicationManager;
-import com.obidea.semantika.knowledgebase.IPrefixManager;
 import com.obidea.semantika.materializer.IMaterializerEngine;
 import com.obidea.semantika.materializer.MaterializationException;
 import com.obidea.semantika.materializer.MaterializerEngineException;
@@ -134,7 +134,7 @@ public class Main
          File config = determineConfigurationFile(optionLine);
          ApplicationManager manager = new ApplicationFactory().configure(config).createApplicationManager();
          
-         String sparql = determineInputSparql(optionLine, manager.getPrefixManager());
+         String sparql = determineInputSparql(optionLine, manager.getPrefixManager().getPrefixMapper());
          int limit = determineResultLimit(optionLine);
          IQueryEngine engine = createQueryEngine(manager);
          
@@ -229,23 +229,23 @@ public class Main
     * @param iPrefixManager 
     * @return The query string.
     */
-   private static String determineInputSparql(CommandLine optionLine, IPrefixManager pm)
+   private static String determineInputSparql(CommandLine optionLine, Map<String, String> prefixes)
    {
       String query = optionLine.getOptionValue(Environment.QUERY).trim(); //$NON-NLS-1$
       if (StringUtils.isEmpty(query)) {
          System.err.println("Input query is missing"); //$NON-NLS-1$
          System.exit(1);
       }
-      return appendPrefixes(query, pm);
+      return appendPrefixes(query, prefixes);
    }
 
-   private static String appendPrefixes(String query, IPrefixManager prefixManager)
+   private static String appendPrefixes(String query, Map<String, String> prefixes)
    {
       StringBuilder toReturn = new StringBuilder();
-      for (String prefix : prefixManager.getPrefixNames()) {
+      for (String prefix : prefixes.keySet()) {
          toReturn.append("PREFIX ").append(prefix).append(":"); //$NON-NLS-1$ //$NON-NLS-2$
          toReturn.append("\t"); //$NON-NLS-1$
-         toReturn.append("<").append(prefixManager.getNamespace(prefix)).append(">"); //$NON-NLS-1$ //$NON-NLS-2$
+         toReturn.append("<").append(prefixes.get(prefix)).append(">"); //$NON-NLS-1$ //$NON-NLS-2$
          toReturn.append("\n"); //$NON-NLS-1$
       }
       toReturn.append(query);
