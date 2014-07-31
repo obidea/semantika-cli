@@ -31,15 +31,13 @@ import org.apache.log4j.Logger;
 
 import com.obidea.semantika.app.ApplicationFactory;
 import com.obidea.semantika.app.ApplicationManager;
-import com.obidea.semantika.app.Settings;
-import com.obidea.semantika.exception.SemantikaException;
 import com.obidea.semantika.knowledgebase.IPrefixManager;
 import com.obidea.semantika.materializer.IMaterializerEngine;
 import com.obidea.semantika.materializer.MaterializationException;
 import com.obidea.semantika.materializer.MaterializerEngineException;
 import com.obidea.semantika.queryanswer.IQueryEngine;
-import com.obidea.semantika.queryanswer.IQueryEngineExt;
-import com.obidea.semantika.queryanswer.QueryEngineException;
+import com.obidea.semantika.queryanswer.SparqlQueryEngine;
+import com.obidea.semantika.queryanswer.exception.QueryAnswerException;
 import com.obidea.semantika.queryanswer.result.IQueryResult;
 import com.obidea.semantika.util.StringUtils;
 
@@ -136,7 +134,7 @@ public class Main
          File config = determineConfigurationFile(optionLine);
          ApplicationManager manager = new ApplicationFactory().configure(config).createApplicationManager();
          
-         String sparql = determineInputSparql(optionLine, manager.getSettings());
+         String sparql = determineInputSparql(optionLine, manager.getPrefixManager());
          int limit = determineResultLimit(optionLine);
          IQueryEngine engine = createQueryEngine(manager);
          
@@ -158,7 +156,7 @@ public class Main
       }
    }
 
-   private static void queryanswer(IQueryEngine engine, String sparql, int limit, boolean showSql) throws QueryEngineException, SemantikaException, IOException
+   private static void queryanswer(IQueryEngine engine, String sparql, int limit, boolean showSql) throws QueryAnswerException, IOException
    {
       engine.start();
       if (showSql) {
@@ -170,16 +168,16 @@ public class Main
       engine.stop();
    }
 
-   private static void printSql(String sparql, IQueryEngine engine) throws SemantikaException
+   private static void printSql(String sparql, IQueryEngine engine) throws QueryAnswerException
    {
       String sql = engine.translate(sparql);
       System.out.println(sql);
    }
 
-   private static IQueryResult evaluateQuery(String sparql, IQueryEngine engine, int limit) throws SemantikaException
+   private static IQueryResult evaluateQuery(String sparql, IQueryEngine engine, int limit) throws QueryAnswerException
    {
-      if (engine instanceof IQueryEngineExt) {
-         return ((IQueryEngineExt) engine).createQuery(sparql).setMaxResults(limit).evaluate();
+      if (engine instanceof SparqlQueryEngine) {
+         return ((SparqlQueryEngine) engine).createQuery(sparql).setMaxResults(limit).evaluate();
       }
       return engine.evaluate(sparql);
    }
@@ -219,7 +217,7 @@ public class Main
    private static void flushResult(IQueryResult result) throws IOException
    {
       while (result.next()) {
-         System.out.println(result.getValueList().toString());
+         System.out.println(result.getValueArray().toString());
       }
    }
 
@@ -231,14 +229,14 @@ public class Main
     * @param iPrefixManager 
     * @return The query string.
     */
-   private static String determineInputSparql(CommandLine optionLine, Settings settings)
+   private static String determineInputSparql(CommandLine optionLine, IPrefixManager pm)
    {
       String query = optionLine.getOptionValue(Environment.QUERY).trim(); //$NON-NLS-1$
       if (StringUtils.isEmpty(query)) {
          System.err.println("Input query is missing"); //$NON-NLS-1$
          System.exit(1);
       }
-      return appendPrefixes(query, settings.getPrefixManager());
+      return appendPrefixes(query, pm);
    }
 
    private static String appendPrefixes(String query, IPrefixManager prefixManager)
