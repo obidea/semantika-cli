@@ -3,7 +3,7 @@ Semantika CLI
 
 A Unix-based command line utility for debugging, querying and exporting data.
 
-Latest news: [1.3 (build 17) is available](https://github.com/obidea/semantika-cli/releases/tag/v1.3_17.1) (July 31, 2014)
+Latest news: [1.3 (build 17.1) is available](https://github.com/obidea/semantika-cli/releases/tag/v1.3_17.1) (July 31, 2014)
 
 ```
 usage: semantika queryanswer [OPTIONS...]
